@@ -1,0 +1,29 @@
+{ "name": "univeil",
+  "version": "0.1.0",
+  "description": "Unveil some Unicode characters that are easily overlooked.",
+  "keywords": [
+    "control character",
+    "non-printable",
+    "non-printable character",
+    "surrogate character",
+    "unpaired surrogate",
+    "surrogate pair",
+    "unicode" ],
+
+  "author": "M.K. (https://github.com/mk-pmb)",
+  "homepage": "https://github.com/mk-pmb/univeil-js#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mk-pmb/univeil-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mk-pmb/univeil-js/issues"
+  },
+
+  "private": false, "license": "ISC",
+  "main": "univeil.js",
+  "scripts": { "test": "nodejs test/test.js" },
+  "directories": { "test": "test" },
+
+  "npm vs. BOM = Unexpected token": "-*- coding: UTF-8 -*-"
+}
