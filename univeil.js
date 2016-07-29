@@ -31,7 +31,6 @@ EX.uHHHH = function uHHHH(chr) {
 };
 
 
-
 EX.dict_or_uHHHH = function (dict, chr) {
   var found = dict[chr];
   if ((typeof found) === 'string') { return found; }
@@ -56,15 +55,19 @@ EX.rgx = {
   generalPunctuation_nonpr: /[\u2000-\u200F\u2028-\u202F\u205F-\u206F]/g,
   latinSupplement_ctrl: /[\x80-\x9F]/g,
   nbsp_nonpr: /\xA0/g,
+  privateUseArea_untrust: /[\uE000-\uF8FF]/g,
   softHyphen_nonpr: /\xAD/g,
+  specials_nonpr: /[\uFFF9-\uFFFF]/g,
   surrogatePair: /[\uD800-\uDBFF][\uDC00-\uDFFF]/g,
   unpairedHighSurrogate: /[\uD800-\uDBFF](?=[\x00-\uD7FF\uE000-\uFFFF]|$)/g,
   unpairedLowSurrogate: /(^|[\x00-\uD7FF\uE000-\uFFFF])([\uDC00-\uDFFF])/g,
+  variationSelectors_nonpr: /[\uFE00-\uFE0F]/g,
+  zwnbspAkaByteOrderMark_nonpr: /\uFEFF/g,
 };
 
 (function extendRgx(r) {
   r.nonprintCombo = new RegExp('[' + Object.keys(r).map(function (k) {
-    return (!k.match(/_(nonpr|ctrl)$/) ? '' : String(r[k]
+    return (!k.match(/_(ctrl|nonpr|untrust)$/) ? '' : String(r[k]
       ).replace(/^\/|\/g?$|\[|\]/g, ''));
   }).join('') + ']', 'g');
 }(EX.rgx));
@@ -94,8 +97,30 @@ EX.jsonify = function (data, preProcessor, indent) {
     break;
   }
   return data;
-
 };
+
+
+EX.funcProxy = function (func, ctx, preArgs, opts, postArgs) {
+  if ((typeof func) === 'string') { func = (ctx || false)[func]; }
+  if ((typeof func) !== 'function') {
+    throw new Error('funcProxy(): func must be a function or a method name');
+  }
+  if (!preArgs) { preArgs = []; }
+  if (!(preArgs instanceof Array)) {
+    throw new Error('funcProxy(): preArgs must be an array or false-y.');
+  }
+  if (!postArgs) { postArgs = []; }
+  if (!(postArgs instanceof Array)) {
+    throw new Error('funcProxy(): postArgs must be an array or false-y.');
+  }
+  postArgs = [].concat(preArgs, null, postArgs);
+  preArgs = preArgs.length;
+  return function univeilFuncProxy(data) {
+    postArgs[preArgs] = EX(data, opts);
+    return func.apply(ctx, postArgs);
+  };
+};
+
 
 
 

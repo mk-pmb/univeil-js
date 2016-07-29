@@ -1,5 +1,5 @@
 { "name": "univeil",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Unveil some Unicode characters that are easily overlooked.",
   "keywords": [
     "control character",
@@ -12,6 +12,7 @@
 
   "author": "M.K. (https://github.com/mk-pmb)",
   "homepage": "https://github.com/mk-pmb/univeil-js#readme",
+  "bin": { "univeil": "bin/stdio-pipe.sh" },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mk-pmb/univeil-js.git"

@@ -29,6 +29,9 @@ hf.verifyOutput(function readmePreview(console) {
   // Special reserved indentation "-1": spaces but no newlines.
   cl(univeil.jsonify(tmp, null, -1));
     //= `[0, 1, "nbsp=\u00A0", "devCtrl=\u0090", {"b": true}, null, -2]`
+
+  tmp = univeil.funcProxy(cl, null, ['(('], { '\xA0': '<nbsp>' }, ['))']);
+  tmp('hello\xA0world');    //= `(( hello<nbsp>world ))`
 })();
 
 
