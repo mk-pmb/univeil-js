@@ -3,8 +3,8 @@
 'use strict';
 
 var EX = function univeil(txt, escFunc) {
+  if (escFunc === false) { return txt; }
   if (!escFunc) { escFunc = EX.uHHHH; }
-  var esc2nd = function (m, k, c) { return k + escFunc(m && c); };
   switch (escFunc && (typeof escFunc)) {
   case 'string':
     escFunc = EX.whitelist_or_uHHHH.bind(null, escFunc);
@@ -19,9 +19,15 @@ var EX = function univeil(txt, escFunc) {
   }
   txt = String(txt);
   txt = txt.replace(EX.rgx.nonprintCombo, escFunc);
-  txt = txt.replace(EX.rgx.unpairedLowSurrogate, esc2nd);
+  txt = txt.replace(EX.rgx.unpairedLowSurrogate,
+    EX.simulateLookbehind_simple.bind(null, escFunc));
   txt = txt.replace(EX.rgx.unpairedHighSurrogate, escFunc);
   return txt;
+};
+
+
+EX.simulateLookbehind_simple = function (replacer, match, badPrefix) {
+  return (badPrefix ? match : replacer(match));
 };
 
 
@@ -58,18 +64,33 @@ EX.rgx = {
   privateUseArea_untrust: /[\uE000-\uF8FF]/g,
   softHyphen_nonpr: /\xAD/g,
   specials_nonpr: /[\uFFF9-\uFFFF]/g,
-  surrogatePair: /[\uD800-\uDBFF][\uDC00-\uDFFF]/g,
-  unpairedHighSurrogate: /[\uD800-\uDBFF](?=[\x00-\uD7FF\uE000-\uFFFF]|$)/g,
-  unpairedLowSurrogate: /(^|[\x00-\uD7FF\uE000-\uFFFF])([\uDC00-\uDFFF])/g,
   variationSelectors_nonpr: /[\uFE00-\uFE0F]/g,
   zwnbspAkaByteOrderMark_nonpr: /\uFEFF/g,
 };
-
 (function extendRgx(r) {
   r.nonprintCombo = new RegExp('[' + Object.keys(r).map(function (k) {
     return (!k.match(/_(ctrl|nonpr|untrust)$/) ? '' : String(r[k]
       ).replace(/^\/|\/g?$|\[|\]/g, ''));
   }).join('') + ']', 'g');
+
+  r.surrogatePair = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
+  // by definition   ^-- high srg.  ^-- low srg.
+
+  r.unpairedHighSurrogate = /[\uD800-\uDBFF](?![\uDC00-\uDFFF])/g;
+  // any high surrogate -----^              ^  ^-- a low surrogate
+  // not followed by -----------------------'
+
+  r.unpairedLowSurrogate = /([\uD800-\uDBFF]|)[\uDC00-\uDFFF]/g;
+  // lookbehind shim: high srg. optional ---^ ^-- then a low srg.
+  // JS will prefer the earliest matching variant in group 1,
+  // so if there's any chance it can find a correct pair instead of
+  // just a lonely low surrogate, it will prefer to match the pair.
+  // In that case, group 1 has text, so EX.simulateLookbehind_simple
+  // will replace the pair with itself, effectively skipping it.
+  // In case of just a low surrogate, the entire match (group 0)
+  // will be only one character, so it's safe to send it to escFunc
+  // even if that only escapes the 1st character.
+
 }(EX.rgx));
 
 

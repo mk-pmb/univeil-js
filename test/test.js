@@ -43,15 +43,25 @@ hf.sleq('<\\u0000> <\\u000D> <\\u007F>');
 // Surrogate characters:
 // =====================
 
-slashed = ['\\uD83C', '\\uDF68', '\\uD83C', '\\uDF70'];
-slashed.all = slashed.join('');
-raw = hf.unslash(slashed.all);
-hf.sleq(slashed.all + '=' + raw, '🍨🍰=🍨🍰');
-hf.sleq(raw.substr(1, 2), slashed[1] + slashed[2]);
-hf.sleq(raw.substr(1, 1), slashed[1]);
-slashed.all = slashed.join('=');
-raw = hf.unslash(slashed.all);
-hf.sleq(raw, slashed.all);
+function surrogatePattern(ptn) {
+  ptn = ptn.replace(/\d/g, function (m) { return surrogatePattern.chr[m]; });
+  raw = hf.unslash(ptn);
+  return ptn;
+}
+
+surrogatePattern.chr = ['\\uD83C', '\\uDF68', '\\uD83C', '\\uDF70'];
+slashed = surrogatePattern('0123');
+hf.sleq(slashed + '=' + raw, '🍨🍰=🍨🍰');
+slashed = surrogatePattern('12');
+hf.sleq(raw, slashed);
+slashed = surrogatePattern('1');
+hf.sleq(raw, slashed);
+slashed = surrogatePattern('0=1=2=3');
+hf.sleq(raw, slashed);
+slashed = surrogatePattern('0 00 : 01 10 11 1 12 : 23 32');
+hf.sleq(raw, slashed.replace(/: \S+/g, hf.unslash));
+slashed = surrogatePattern('000 00 : 01 11 111');
+hf.sleq(raw, slashed.replace(/: \S+/g, hf.unslash));
 
 
 // ASCII control characters:
