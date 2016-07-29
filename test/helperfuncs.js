@@ -40,22 +40,35 @@ EX.guessCalledFrom = function () {
 };
 
 
+EX.quot = function (s) { return '‹' + String(s).replace(/\n/g, '¶') + '›'; };
+
+
 EX.xeq = function (result, expected) {
   var where = EX.guessCalledFrom();
   if (result === expected) {
-    console.log('+ ' + where + ': ‹' + expected + '›');
+    if (EX.xeq.verbose) {
+      console.log('+ ' + where + ': ' + EX.quot(expected));
+    }
     return true;
   }
-  console.error('! ' + where + ': ‹' + result + '›\n  ' +
-    where.replace(/[\S\s]/g, ' ') + '≠ ‹' + expected + '›');
+  console.error('! ' + where + ': ' + EX.quot(result) + '\n  ' +
+    where.replace(/[\S\s]/g, ' ') + '≠ ' + EX.quot(expected));
   EX.failCnt += 1;
   return false;
 };
+EX.xeq.verbose = false;
 
 
-EX.sleq = function (slashed, expected) {
-  if (expected === undefined) { expected = slashed; }
-  return EX.xeq(univeil(EX.unslash(slashed)), expected);
+EX.sleq = function (args, expected) {
+  if (!(args instanceof Array)) { args = [args]; }
+  if (expected === undefined) { expected = args[0]; }
+  args[0] = EX.unslash(args[0]);
+  try {
+    args = univeil.apply(null, args);
+  } catch (err) {
+    args = String(err);
+  }
+  return EX.xeq(args, expected);
 };
 
 
@@ -80,6 +93,24 @@ EX.rangeIncl = function (start, end, step) {
   for (0; start <= end; start += step) { rng[rng.length] = start; }
   return rng;
 };
+
+
+EX.verifyOutput = function (doStuff) {
+  var cons = { stdout: '', stderr: '' }, expected = [];
+  String(doStuff).replace(/ \/{2}= *`([ -\uFFFF]*)`/g,
+    function (m, ln) { expected[expected.length] = (m && ln); });
+  expected.next = 0;
+  cons.log = cons.error = function () {
+    var msg = Array.prototype.slice.call(arguments, 0).join(' ');
+    msg.split(/\n/).forEach(function (ln) {
+      EX.xeq(ln, expected[expected.next]);
+      expected.next += 1;
+    });
+  };
+  return doStuff.bind(null, cons);
+};
+
+
 
 
 

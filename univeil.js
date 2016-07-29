@@ -5,6 +5,18 @@
 var EX = function univeil(txt, escFunc) {
   if (!escFunc) { escFunc = EX.uHHHH; }
   var esc2nd = function (m, k, c) { return k + escFunc(m && c); };
+  switch (escFunc && (typeof escFunc)) {
+  case 'string':
+    escFunc = EX.whitelist_or_uHHHH.bind(null, escFunc);
+    break;
+  case 'object':
+    if (escFunc instanceof RegExp) {
+      escFunc = EX.matchesRegexp_or_uHHHH.bind(null, escFunc);
+      break;
+    }
+    escFunc = EX.dict_or_uHHHH.bind(null, escFunc);
+    break;
+  }
   txt = String(txt);
   txt = txt.replace(EX.rgx.nonprintCombo, escFunc);
   txt = txt.replace(EX.rgx.unpairedLowSurrogate, esc2nd);
@@ -16,6 +28,26 @@ var EX = function univeil(txt, escFunc) {
 EX.uHHHH = function uHHHH(chr) {
   return '\\u' + (0x10000 + chr.charCodeAt(0)).toString(16
     ).substr(1, 4).toUpperCase();
+};
+
+
+
+EX.dict_or_uHHHH = function (dict, chr) {
+  var found = dict[chr];
+  if ((typeof found) === 'string') { return found; }
+  found = dict[''];
+  if ((typeof found) === 'string') { return found; }
+  return EX.uHHHH(chr);
+};
+
+
+EX.whitelist_or_uHHHH = function (whl, chr) {
+  return (whl.indexOf(chr) < 0 ? EX.uHHHH(chr) : chr);
+};
+
+
+EX.matchesRegexp_or_uHHHH = function (rgx, chr) {
+  return (rgx.exec(chr) ? chr : EX.uHHHH(chr));
 };
 
 
@@ -36,6 +68,37 @@ EX.rgx = {
       ).replace(/^\/|\/g?$|\[|\]/g, ''));
   }).join('') + ']', 'g');
 }(EX.rgx));
+
+
+EX.jsonify = function (data, preProcessor, indent) {
+  var ty = (data && (typeof data));
+  if ((indent === undefined) && ((typeof preProcessor) === 'number')) {
+    indent = preProcessor;
+    preProcessor = null;
+  }
+  if (indent === -1) {
+    if (ty === 'object') { ty = -1; }
+    indent = 1;
+  }
+  data = JSON.stringify(data, preProcessor, indent);
+  if (ty === -1) {
+    data = data.replace(/(\{|\[)\n */g, '$1'
+      ).replace(/\n *(\}|\])/g, '$1'
+      ).replace(/\n */g, ' ');
+  }
+  switch (ty) {
+  case 'object':
+  case 'string':
+  case -1:
+    data = EX(data, '\n');
+    break;
+  }
+  return data;
+
+};
+
+
+
 
 
 
