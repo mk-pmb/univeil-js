@@ -18,8 +18,10 @@ hf.verifyOutput(function readmePreview(console) {
     //= `,\u0008, ,\u000C`
   cl(univeil(tmp, { '\xA0': '<nbsp>', '\n': '<nl>', '': '<?!>' }));   // dict
     //= `\,<?!>,<?!>,<nl>,<?!>,<nbsp>,<?!>`
-  cl(univeil(tmp, encodeURIComponent));         // translator function
+  cl(univeil(tmp, encodeURIComponent));     // custom translator function
     //= `\,%09,%0D,%0A,%08,%C2%A0,%0C`
+  cl(univeil(tmp, univeil.xmlCharRef));     // some batteries included
+    //= `\,&#9;,&#13;,&#10;,&#8;,&#xA0;,&#12;`
   // For more variants, see "Custom translations" below.
 
   tmp = [0, 1, 'nbsp=\xA0', 'devCtrl=\x90', { b: true }, null, -2];

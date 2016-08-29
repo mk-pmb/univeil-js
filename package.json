@@ -1,5 +1,5 @@
 { "name": "univeil",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Unveil some Unicode characters that are easily overlooked.",
   "keywords": [
     "control character",
@@ -8,7 +8,8 @@
     "surrogate character",
     "unpaired surrogate",
     "surrogate pair",
-    "unicode" ],
+    "unicode",
+    "xml" ],
 
   "author": "M.K. (https://github.com/mk-pmb)",
   "homepage": "https://github.com/mk-pmb/univeil-js#readme",

@@ -37,6 +37,13 @@ EX.uHHHH = function uHHHH(chr) {
 };
 
 
+EX.xmlCharRef = function (chr) {
+  chr = (chr.length === 1 ? chr.charCodeAt(0) : chr.codePointAt(0));
+  if (chr > 99) { chr = 'x' + chr.toString(16).toUpperCase(); }
+  return '&#' + chr + ';';
+};
+
+
 EX.dict_or_uHHHH = function (dict, chr) {
   var found = dict[chr];
   if ((typeof found) === 'string') { return found; }

@@ -6,6 +6,7 @@ SELFPATH="$(readlink -m "$BASH_SOURCE"/..)"
 function update_readme () {
   cd "$SELFPATH" || return $?
   local RMD=../README.md
+  local UPD="$RMD.upd-$$.tmp"
   grep -Fe '(function readmePreview(' -m 1 -A 9002 -- test.js \
     | grep -Pe '^\S' -m 2 -B 9002 | grep -Pe '^( |$)' | sed -nre '
     : copy
@@ -20,8 +21,9 @@ function update_readme () {
       n
       /^```/b copy
     b ins
-    ' -- "$RMD" >"$RMD".upd
-  mv -- "$RMD"{.upd,}
+    ' -- "$RMD" >"$UPD"
+  [ -s "$UPD" ] || return 3$(echo "E: empty: $UPD" >&2)
+  mv -- "$UPD" "$RMD"
   git add -- "$RMD"
   git diff HEAD -- "$RMD"
   return 0

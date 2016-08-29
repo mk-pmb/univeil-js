@@ -13,6 +13,12 @@ It might protect your terminal emulator from that U+0090 device control,
 but it won't care about your database or shell, since most quotes and
 backslashes are perfectly visible characters.
 
+Albeit an XML [CharRef][xml-charref] encoder is included, it usually
+won't be applied to the [predefined entities][xml-predent], as they're
+perfectly visible. If you need them encoded as well, use
+[xmlunidefuse](https://www.npmjs.com/package/xmlunidefuse) instead.
+
+
 
 Usage
 -----
@@ -31,8 +37,10 @@ From [test.js](test/test.js):
     //= `,\u0008, ,\u000C`
   cl(univeil(tmp, { '\xA0': '<nbsp>', '\n': '<nl>', '': '<?!>' }));   // dict
     //= `\,<?!>,<?!>,<nl>,<?!>,<nbsp>,<?!>`
-  cl(univeil(tmp, encodeURIComponent));         // translator function
+  cl(univeil(tmp, encodeURIComponent));     // custom translator function
     //= `\,%09,%0D,%0A,%08,%C2%A0,%0C`
+  cl(univeil(tmp, univeil.xmlCharRef));     // some batteries included
+    //= `\,&#9;,&#13;,&#10;,&#8;,&#xA0;,&#12;`
   // For more variants, see "Custom translations" below.
 
   tmp = [0, 1, 'nbsp=\xA0', 'devCtrl=\x90', { b: true }, null, -2];
@@ -55,6 +63,8 @@ $ head -n 1 README.md | univeil
 
 
 
+  [xml-predent]: https://www.w3.org/TR/REC-xml/#sec-predefined-ent
+  [xml-charref]: https://www.w3.org/TR/REC-xml/#NT-CharRef
 
 
 License
