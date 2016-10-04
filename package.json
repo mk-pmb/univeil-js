@@ -1,5 +1,5 @@
 { "name": "univeil",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Unveil some Unicode characters that are easily overlooked.",
   "keywords": [
     "control character",

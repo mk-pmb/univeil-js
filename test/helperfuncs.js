@@ -9,7 +9,7 @@ EX.charCodeAt0 = function (s) { return String(s).charCodeAt(0); };
 
 
 EX.cc2str = function (cc) {
-  if (!(cc instanceof Array)) { cc = [cc]; }
+  if (!Array.isArray(cc)) { cc = [cc]; }
   return String.fromCharCode.apply(String, cc);
 };
 
@@ -60,7 +60,7 @@ EX.xeq.verbose = false;
 
 
 EX.sleq = function (args, expected) {
-  if (!(args instanceof Array)) { args = [args]; }
+  if (!Array.isArray(args)) { args = [args]; }
   if (expected === undefined) { expected = args[0]; }
   args[0] = EX.unslash(args[0]);
   try {
@@ -84,7 +84,7 @@ EX.exitReport = function () {
 
 EX.rangeIncl = function (start, end, step) {
   var rng = [];
-  if (start instanceof Array) {
+  if (Array.isArray(start)) {
     return rng.map.call(arguments, Function.apply.bind(EX.rangeIncl, null));
   }
   if (!step) { step = 1; }

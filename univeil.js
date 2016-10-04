@@ -75,9 +75,11 @@ EX.rgx = {
   zwnbspAkaByteOrderMark_nonpr: /\uFEFF/g,
 };
 (function extendRgx(r) {
+  r.nonprintGroups = {};
   r.nonprintCombo = new RegExp('[' + Object.keys(r).map(function (k) {
-    return (!k.match(/_(ctrl|nonpr|untrust)$/) ? '' : String(r[k]
-      ).replace(/^\/|\/g?$|\[|\]/g, ''));
+    if (!k.match(/_(ctrl|nonpr|untrust)$/)) { return ''; }
+    r.nonprintGroups[k] = r[k];
+    return String(r[k]).replace(/^\/|\/g?$|\[|\]/g, '');
   }).join('') + ']', 'g');
 
   r.surrogatePair = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
@@ -134,11 +136,11 @@ EX.funcProxy = function (func, ctx, preArgs, opts, postArgs) {
     throw new Error('funcProxy(): func must be a function or a method name');
   }
   if (!preArgs) { preArgs = []; }
-  if (!(preArgs instanceof Array)) {
+  if (!Array.isArray(preArgs)) {
     throw new Error('funcProxy(): preArgs must be an array or false-y.');
   }
   if (!postArgs) { postArgs = []; }
-  if (!(postArgs instanceof Array)) {
+  if (!Array.isArray(postArgs)) {
     throw new Error('funcProxy(): postArgs must be an array or false-y.');
   }
   postArgs = [].concat(preArgs, null, postArgs);
