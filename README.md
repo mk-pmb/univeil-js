@@ -12,6 +12,7 @@ it is __about visibility, not security__.
 It might protect your terminal emulator from that U+0090 device control,
 but it won't care about your database or shell, since most quotes and
 backslashes are perfectly visible characters.
+(For JSON quotes, try `univeil.jsonify`.)
 
 Albeit an XML [CharRef][xml-charref] encoder is included, it usually
 won't be applied to the [predefined entities][xml-predent], as they're
