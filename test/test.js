@@ -5,6 +5,7 @@
 var hf = require('./helperfuncs.js'), slashed, raw;
 
 hf.verifyOutput(function readmePreview(console) {
+  //#u
   var univeil = require('univeil'), cl = console.log, tmp;
   cl(univeil("Hello world!"));        //= `Hello world!`
   cl(univeil("Hel​lo snowman! ☃"));    //= `Hel\u200Blo\u00A0snowman!\u205F☃`
@@ -37,6 +38,7 @@ hf.verifyOutput(function readmePreview(console) {
 
   tmp = univeil.funcProxy(cl, null, ['/+'], { '\xA0': '<nbsp>' }, ['+/']);
   tmp('hello\xA0world');    //= `/+ hello<nbsp>world +/`
+  //#r
 })();
 
 
