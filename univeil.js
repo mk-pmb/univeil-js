@@ -2,27 +2,33 @@
 /* -*- tab-width: 2 -*- */
 'use strict';
 
-var EX = function univeil(txt, escFunc) {
+var EX = function univeil(txt, escFunc, escArg) {
   if (escFunc === false) { return txt; }
-  if (!escFunc) { escFunc = EX.uHHHH; }
-  switch (escFunc && (typeof escFunc)) {
-  case 'string':
-    escFunc = EX.whitelist_or_uHHHH.bind(null, escFunc);
-    break;
-  case 'object':
-    if (escFunc instanceof RegExp) {
-      escFunc = EX.matchesRegexp_or_uHHHH.bind(null, escFunc);
-      break;
-    }
-    escFunc = EX.dict_or_uHHHH.bind(null, escFunc);
-    break;
-  }
+  escFunc = EX.findBindEscFunc(escFunc, escArg);
   txt = String(txt);
   txt = txt.replace(EX.rgx.nonprintCombo, escFunc);
   txt = txt.replace(EX.rgx.unpairedLowSurrogate,
     EX.simulateLookbehind_simple.bind(null, escFunc));
   txt = txt.replace(EX.rgx.unpairedHighSurrogate, escFunc);
   return txt;
+};
+
+
+EX.findBindEscFunc = function (f, a) {
+  if (!f) { return EX.uHHHH; }
+  var t = typeof f;
+  if (t === 'function') { return f; }
+  if (t === 'string') {
+    if (a) { return EX.whitelist_or_dict_or_uHHHH.bind(null, f, a); }
+    return EX.whitelist_or_uHHHH.bind(null, f);
+  }
+  if (t === 'object') {
+    if (f instanceof RegExp) {
+      return EX.matchesRegexp_or_uHHHH.bind(null, f);
+    }
+    return EX.dict_or_uHHHH.bind(null, f);
+  }
+  return f;
 };
 
 
@@ -55,6 +61,11 @@ EX.dict_or_uHHHH = function (dict, chr) {
 
 EX.whitelist_or_uHHHH = function (whl, chr) {
   return (whl.indexOf(chr) < 0 ? EX.uHHHH(chr) : chr);
+};
+
+
+EX.whitelist_or_dict_or_uHHHH = function (whl, dict, chr) {
+  return (whl.indexOf(chr) < 0 ? EX.dict_or_uHHHH(dict, chr) : chr);
 };
 
 
