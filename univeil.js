@@ -2,7 +2,9 @@
 /* -*- tab-width: 2 -*- */
 'use strict';
 
-var EX = function univeil(txt, escFunc, escArg) {
+var EX, structurallySafeJsonify = require('json-stringify-safe');
+
+EX = function univeil(txt, escFunc, escArg) {
   if (escFunc === false) { return txt; }
   escFunc = EX.findBindEscFunc(escFunc, escArg);
   txt = String(txt);
@@ -124,7 +126,7 @@ EX.jsonify = function (data, preProcessor, indent) {
     if (ty === 'object') { ty = -1; }
     indent = 1;
   }
-  data = JSON.stringify(data, preProcessor, indent);
+  data = structurallySafeJsonify(data, preProcessor, indent);
   if (ty === -1) {
     data = data.replace(/(\{|\[)\n */g, '$1'
       ).replace(/\n *(\}|\])/g, '$1'

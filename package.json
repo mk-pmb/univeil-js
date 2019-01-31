@@ -1,5 +1,5 @@
 { "name": "univeil",
-  "version": "0.1.11",
+  "version": "0.1.14",
   "description": "Unveil some Unicode characters that are easily overlooked.",
   "keywords": [
     "control character",
@@ -26,6 +26,12 @@
   "main": "univeil.js",
   "scripts": { "test": "nodejs test/test.js" },
   "directories": { "test": "test" },
+  
+  "dependencies": {
+    "json-stringify-safe": "^5.0.1"
+  },
+  "devDependencies": {
+  },
 
   "npm vs. BOM = Unexpected token": "-*- coding: UTF-8 -*-"
 }
