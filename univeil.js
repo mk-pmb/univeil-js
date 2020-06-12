@@ -4,6 +4,8 @@
 
 var EX, structurallySafeJsonify = require('json-stringify-safe');
 
+function orf(x) { return (x || false); }
+
 EX = function univeil(txt, escFunc, escArg) {
   if (escFunc === false) { return txt; }
   escFunc = EX.findBindEscFunc(escFunc, escArg);
@@ -116,7 +118,7 @@ EX.rgx = {
 }(EX.rgx));
 
 
-EX.jsonify = function jsonify(data, preProcessor, indent) {
+EX.jsonify = function jsonify(data, preProcessor, indent, extras) {
   if ((indent === undefined) && ((typeof preProcessor) === 'number')) {
     return jsonify(data, null, preProcessor);
   }
@@ -134,7 +136,8 @@ EX.jsonify = function jsonify(data, preProcessor, indent) {
     if (ty === 'object') { ty = -1; }
     indent = 1;
   }
-  data = structurallySafeJsonify(data, preProcessor, indent);
+  data = structurallySafeJsonify(data, preProcessor, indent,
+    orf(extras).decycler);
   if (ty === -1) {
     data = data.replace(/(\{|\[)\n */g, '$1'
       ).replace(/\n *(\}|\])/g, '$1'
@@ -145,7 +148,7 @@ EX.jsonify = function jsonify(data, preProcessor, indent) {
 
 
 EX.funcProxy = function (func, ctx, preArgs, opts, postArgs) {
-  if ((typeof func) === 'string') { func = (ctx || false)[func]; }
+  if ((typeof func) === 'string') { func = orf(ctx)[func]; }
   if ((typeof func) !== 'function') {
     throw new Error('funcProxy(): func must be a function or a method name');
   }
