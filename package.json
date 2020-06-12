@@ -26,7 +26,7 @@
   "main": "univeil.js",
   "scripts": { "test": "nodejs test/test.js" },
   "directories": { "test": "test" },
-  
+
   "dependencies": {
     "json-stringify-safe": "^5.0.1"
   },
