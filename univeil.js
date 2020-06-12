@@ -121,6 +121,15 @@ EX.jsonify = function jsonify(data, preProcessor, indent) {
     return jsonify(data, null, preProcessor);
   }
   var ty = (data && (typeof data));
+  switch (ty) {
+  case 0:
+  case 'number':
+  case false:
+  case 'boolean':
+  case null:
+  case '':
+    return JSON.stringify(data);
+  }
   if (indent === -1) {
     if (ty === 'object') { ty = -1; }
     indent = 1;
@@ -131,14 +140,7 @@ EX.jsonify = function jsonify(data, preProcessor, indent) {
       ).replace(/\n *(\}|\])/g, '$1'
       ).replace(/\n */g, ' ');
   }
-  switch (ty) {
-  case 'object':
-  case 'string':
-  case -1:
-    data = EX(data, '\n');
-    break;
-  }
-  return data;
+  return EX(data, '\n');
 };
 
 
