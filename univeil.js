@@ -116,12 +116,11 @@ EX.rgx = {
 }(EX.rgx));
 
 
-EX.jsonify = function (data, preProcessor, indent) {
-  var ty = (data && (typeof data));
+EX.jsonify = function jsonify(data, preProcessor, indent) {
   if ((indent === undefined) && ((typeof preProcessor) === 'number')) {
-    indent = preProcessor;
-    preProcessor = null;
+    return jsonify(data, null, preProcessor);
   }
+  var ty = (data && (typeof data));
   if (indent === -1) {
     if (ty === 'object') { ty = -1; }
     indent = 1;
