@@ -1,5 +1,5 @@
 { "name": "univeil",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "Unveil some Unicode characters that are easily overlooked.",
   "keywords": [
     "control character",
@@ -9,7 +9,8 @@
     "unpaired surrogate",
     "surrogate pair",
     "unicode",
-    "xml" ],
+    "xml"
+  ],
 
   "author": "M.K. (https://github.com/mk-pmb)",
   "homepage": "https://github.com/mk-pmb/univeil-js#readme",
@@ -32,6 +33,8 @@
   },
   "devDependencies": {
   },
+
+
 
   "npm vs. BOM = Unexpected token": "-*- coding: UTF-8 -*-"
 }

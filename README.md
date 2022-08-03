@@ -11,6 +11,7 @@ Unveil some Unicode characters that are easily overlooked.
 
 Security reminder
 -----------------
+
 Although `univeil` can replace characters with a backslash notation,<br>
 it is __about visibility, not security__.
 
