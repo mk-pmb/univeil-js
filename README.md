@@ -74,7 +74,7 @@ tmp('hello\xA0world');    //= `/+ hello<nbsp>world +/`
 
 CLI:
 ```bash
-$ head -n 1 README.md | univeil
+$ head --lines=1 README.md | univeil
 \uFEFF
 ```
 
