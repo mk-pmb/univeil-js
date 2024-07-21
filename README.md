@@ -27,6 +27,14 @@ perfectly visible. If you need them encoded as well, use
 
 
 
+Unicode feature reminders
+-------------------------
+
+* To fix [decomposed vs. precomposed characters][e-is-not-e]
+  (`'o\u0308'` = `'ö'` &ne; `'ö'`), use [String#normalize][mdn-normstr].
+
+
+
 Usage
 -----
 
@@ -80,8 +88,13 @@ $ head --lines=1 README.md | univeil
 
 
 
-  [xml-predent]: https://www.w3.org/TR/REC-xml/#sec-predefined-ent
+
+<!-- Keep the named links sorted alphabetically. -->
+
+  [e-is-not-e]: https://blog.teknkl.com/when-an-e-is-not-an-e-about-unicode-precomposed-vs-decomposed-characters-and-why-they-matter/
+  [mdn-normstr]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
   [xml-charref]: https://www.w3.org/TR/REC-xml/#NT-CharRef
+  [xml-predent]: https://www.w3.org/TR/REC-xml/#sec-predefined-ent
 
 
 
